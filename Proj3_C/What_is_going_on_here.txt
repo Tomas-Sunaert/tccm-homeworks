@@ -1,0 +1,11 @@
+This file explains what i'm doing
+
+I have broken up the problem in many digestable functions.
+
+Then I'll try to test one by one to see if they behave as expected, putting them in the 'test.c' file and compiling.
+
+Since I'm personally not very familiar with C, I want to see and correct compiling erorrs one by one.
+
+
+
+- Jacopo
