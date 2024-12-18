@@ -1,14 +1,13 @@
 program multiply_matrices
-    !Import libraries
-    use dense_module.f90
-    external :: dgemm
+    use dense_module
     implicit none
 
     ! Declare variables and matrices
     integer :: size, Nmult
     real :: totalTime
-    character(len=100), intent(in) :: fileA, fileB
+    character(len=100) :: fileA, fileB
     real(kind=8), allocatable :: A(:,:), B(:,:), C(:,:)
+    character(len=10) :: size_str
 
     !Take arguments  
     if (command_argument_count() /= 3) then
@@ -17,9 +16,8 @@ program multiply_matrices
     end if
     call get_command_argument(1, fileA)
     call get_command_argument(2, fileB)
-    call get_command_argument(3, size)
-    read(size, *) size
-
+    call get_command_argument(3, size_str)
+    read(size_str, *) size
     ! Allocate matrices
     allocate(A(size, size), B(size, size), C(size, size))
 
