@@ -2,6 +2,18 @@ Module dense_module
     implicit none
     Contains
 
+    subroutine print_matrix(size,A) ! Print matrix to screen
+        implicit none
+        integer, intent(in) :: size
+        real(kind=8), intent(in) :: A(size, size)
+
+        integer :: i
+
+        do i = 1, size
+            print *, A(i, 1:size)
+        end do
+    end subroutine print_matrix
+
     subroutine store_dense(matrix, size, file) ! Store matrix explicitly in 2D array
         implicit none
         real(kind=8), intent(inout) :: matrix(:,:)
@@ -50,10 +62,11 @@ Module dense_module
 
         integer :: i, j, k
 
+        C = 0.0d0
         do i = 1, size
             do j = 1, size
                 do k = 1, size
-                    C(i, j) = A(i, k) * B(k, j)
+                    C(i, j) = C(i, j) + A(i, k) * B(k, j)
                     Nmult = Nmult + 1
                 end do
             end do
@@ -69,10 +82,11 @@ Module dense_module
 
         integer :: i, j, k
 
+        C = 0.0d0
         do i = 1, size
             do j = i, size ! Only iterate over the upper triangular part (j >= i) 
                 do k = 1, size
-                    C(i, j) = A(i, k) * B(k, j)
+                    C(i, j) = C(i, j) + A(i, k) * B(k, j)
                     Nmult = Nmult + 1
                 end do
                 C(j, i) = C(i, j)
@@ -94,13 +108,13 @@ Module dense_module
         elseif (method == "symmetry") then
             call mult_dense_sim(A, B, C, size, Nmult)
         elseif (method == "LAPACK") then
+            C = 0.0d0
             call dgemm('N', 'N', size, size, size, 1.0d0, A, size, B, size, 0.0d0, C, size)
         else
             print *, "Error: Invalid method specified: ", method
             stop
         end if
     end subroutine call_mult
-
       
     subroutine measure_mult(method, A, B, C, size, Nmult, totalTime) ! Subroutine to measure matrix multiplication time
         implicit none

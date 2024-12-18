@@ -25,10 +25,29 @@ program multiply_matrices
     call store_dense(A, size, fileA)
     call store_dense(B, size, fileB)
 
+    !Debugging
+    print *, 'Matrix A:'
+    call print_matrix(size,A)
+    print *
+    print *, 'matrix B:'
+    call print_matrix(size,B)
+    print *
+
     ! Measure and print multiplication times for each dense method
     call measure_mult("naive", A, B, C, size, Nmult, totalTime)
+    print *, 'matrix C:'
+    call print_matrix(size,C)
+    print *
+
     call measure_mult("symmetry", A, B, C, size, Nmult, totalTime)
+    print *, 'matrix C:'
+    call print_matrix(size,C)
+    print *
+
     call measure_mult("LAPACK", A, B, C, size, Nmult, totalTime)
+    print *, 'matrix C:'
+    call print_matrix(size,C)
+    print *
 
     deallocate(A,B,C)
 end program multiply_matrices
