@@ -35,17 +35,18 @@ program multiply_matrices
 
     ! Measure and print multiplication times for each dense method
     call measure_mult("naive", A, B, C, size, Nmult, totalTime)
-    print *, 'matrix C:'
+    print *, 'matrix C:' ! Debugging
     call print_matrix(size,C)
     print *
 
     call measure_mult("symmetry", A, B, C, size, Nmult, totalTime)
-    print *, 'matrix C:'
+    print *, 'matrix C:' !Debugging
     call print_matrix(size,C)
     print *
 
+    print *, "Warning! # Multiplications will be 0 as cannot directly measure LAPACK\'s DGEMM operations"
     call measure_mult("LAPACK", A, B, C, size, Nmult, totalTime)
-    print *, 'matrix C:'
+    print *, 'matrix C:' !Debugging
     call print_matrix(size,C)
     print *
 

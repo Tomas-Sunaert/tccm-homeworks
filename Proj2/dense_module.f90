@@ -146,7 +146,7 @@ Module dense_module
         end if
 
         print *, "Wall time: ", totalTime, "s"
-        print *, "Nmult: ", Nmult
+        print *, "# Multiplications: ", Nmult
         print *
     end subroutine measure_mult
 
