@@ -8,4 +8,12 @@ Since I'm personally not very familiar with C, I want to see and correct compili
 
 
 
+There are many segments and prototypes, the only one you care about is the "Final.c". All the others are the program that was developing day by day.
+Compile it ad have fun.
+
+
+
+
+
+
 - Jacopo

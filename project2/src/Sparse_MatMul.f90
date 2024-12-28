@@ -1,19 +1,20 @@
+! here is a module containing all the subroutines and global variable (none) in this script
 module matrix_io
   implicit none
 contains
   subroutine read_mat(file_path, row, col, val, num_lines, dimensions, dense)
     implicit none
 
-    character(len=*), intent(in) :: file_path
-    real*8, allocatable, intent(out) :: row(:), col(:), val(:)
-    real*8, allocatable, intent(out) :: dense(:,:)
-    integer, intent(out) :: num_lines, dimensions
+    character(len=*), intent(in) :: file_path !path
+    real*8, allocatable, intent(out) :: row(:), col(:), val(:) !arrays in wich to store the 3 1D arrays
+    real*8, allocatable, intent(out) :: dense(:,:) !2D dense format
+    integer, intent(out) :: num_lines, dimensions ! array elements of the 1D arrays as well as the max index 
 
-    integer :: i, io_status, max_row, max_col, max_index
-    real*8 :: row_temp, col_temp, val_temp
+    integer :: i, io_status, max_row, max_col, max_index !error check and utilities
+    real*8 :: row_temp, col_temp, val_temp ! utilities
 
     open(unit=13, file=file_path, status="old", action="read")
-    ! Conta il numero di linee
+    ! Counts the lines
     num_lines = 0
     do
       read(13, *, iostat=io_status)
@@ -23,34 +24,41 @@ contains
 
     rewind(13)
 
-    ! Alloca gli array
+    ! Now that i know how many lines it takes i allocate the arrays
     allocate(row(num_lines), col(num_lines), val(num_lines))
+    ! Initialization (safety)
     row = 0.d0
     col = 0.d0
     val = 0.d0
 
-    ! Legge i valori
+    ! Reading the values from the input file
     do i = 1, num_lines
       read(13, *) row(i), col(i), val(i)
     end do
     close(13)
 
-    ! Trova il massimo indice
+    ! Finds the max index value in the matrix
     max_row = maxval(row)
     max_col = maxval(col)
     max_index = max(max_row, max_col)
 
-    ! Alloca la matrice densa
+    ! Allocates a 2D array for the dense rappresentation
     allocate(dense(max_index, max_index))
     dense = 0.d0
     do i = 1, num_lines
       dense(int(row(i)), int(col(i))) = val(i)
-      dense(int(col(i)), int(row(i))) = val(i) ! Assumendo matrice simmetrica
+      dense(int(col(i)), int(row(i))) = val(i) ! Taking care of the symetry
     end do
 
 
-    dimensions = max_index
+    dimensions = max_index ! For the output, i assign to dimentions the value of max_index
+
+
   end subroutine read_mat
+
+
+
+  ! NOW I FOCUS ON THE REAL DEAL
   subroutine SMaMul(Row1,Row2,Col1,Col2,Val1,Val2, Res, size1, size2, dimension1, dimension2)
   implicit none
   integer :: dimension1, dimension2, size1, size2, big_dim
@@ -59,10 +67,11 @@ contains
   real*8,allocatable :: Row2(:), Col2(:), Val2(:) ! SECOND MATRIX DESCRIPTORS
   real*8, allocatable :: Res(:,:) ! RESULT MATRIX
   real*8 :: Mel ! matrix element (for accumulation)
-
+  
+  ! Shows the matrix dimentions
   write(*,*) 'Dim 1=', dimension1
   write(*,*) 'Dim 2=', dimension2
-  
+  ! And relative sizes of the 1D arrays we are working with (both for debugging and because is interesting to know)
   write(*,*) 'Size 1=', size1
   write(*,*) 'Size 2=', size2
   ! check that we are trying to multuply to matrices that have same dimentionality
@@ -75,14 +84,16 @@ contains
   !allocate(Row1(dimension2),Col1(dimension2),Val1(dimension2))
 
 
- 
+  ! find the minimum size to allocate the mamori with big_dim
   big_dim=max(dimension1,dimension2)
-  allocate(Res(big_dim,big_dim))
+  allocate(Res(big_dim,big_dim)) ! and then allocate the 2D form
 
 
 
-  Res = 0.d0 !set every element to 0
-
+  Res = 0.d0 !set every element to 0, in order to prepare for the accmulation
+  
+  ! I prototyped this thing on MathLab and got it right, try to understand it
+  ! All this is just not to rely on new arrays that would waste memory
   do i = 1,size1
       do j = 1,size2
           if (Col1(i).eq.Row2(j)) then
@@ -92,7 +103,6 @@ contains
           endif
       enddo
   enddo
-write(*,*) 'N 2'
 
   do i = 1,size1
       do j = 1,size2
@@ -116,7 +126,7 @@ program main
 use matrix_io
 implicit none
 
-integer :: size1, size2, dimensions1, dimensions2
+integer :: size1, size2, dimensions1, dimensions2, big_enough
 integer :: i,j
 
 real*8,allocatable :: Row1(:), Col1(:), Val1(:) ! FIRST MATRIX DESCRIPPTORS
@@ -147,12 +157,19 @@ read(*,*) file_name2
 ! setting the path right
 file_path2 = '../data/'//file_name2
 
-
+! i call the suberoutines i made to read the matrices in sparse 1D arrays form
 call read_mat(file_path1, row1, col1, val1, size1, dimensions1, dense1)
 call read_mat(file_path2, row2, col2, val2, size2, dimensions2, dense2)
 
-allocate(ResDense(dimensions1,dimensions1))
+
+
+! I allocate a matrix with dimentions big enough
+big_enough=max(dimensions1,dimensions2)
+allocate(ResDense(big_enough,big_enough))
+! compute the matrix porduct with the matmul function for reference
 ResDense=matmul(dense1,dense2)
+
+! compute with MY subroutine the matrix product
 call SMaMul(Row1,Row2,Col1,Col2,Val1,Val2, Res, size1, size2, dimensions1, dimensions2)
 
 
@@ -160,13 +177,15 @@ call SMaMul(Row1,Row2,Col1,Col2,Val1,Val2, Res, size1, size2, dimensions1, dimen
 
 
 
-
+! write the intrinsic function reference in MaMul
 open(19,file='MaMul')
 do i = 1,dimensions1
     write(19,*) ResDense(i,:)
 enddo
 close(19)
 
+
+! write mu result in My_MaMul
 open(19,file='My_MaMul')
 do i = 1,dimensions1
     write(19,*) Res(i,:)
