@@ -30,7 +30,8 @@ Module dense_module
             stop
         end if
 
-        ! Read file line by line
+        matrix = 0.0d0
+        ! Read file line by line and store to simetrized matrix
         do
             read(io, *, iostat=ios) i, j, value
             if (ios < 0) then
@@ -45,7 +46,9 @@ Module dense_module
                 matrix(i, j) = value
                 matrix(j, i) = value !Matrices are simmetric
             else
-                print *, "Warning: Indices out of bounds for size=", size,": i=", i, ", j=", j
+                print *, "Warning: For file", trim(file),", indices out of bounds for size=", size,": i=", i, ", j=", j
+                print *, "Ensure both matrices are of size <=", size
+                stop
             end if
         end do
 
@@ -89,7 +92,7 @@ Module dense_module
                     C(i, j) = C(i, j) + A(i, k) * B(k, j)
                     Nmult = Nmult + 1
                 end do
-                C(j, i) = C(i, j)
+                C(j, i) = C(i, j) !This is not true
             end do
         end do
     end subroutine mult_dense_sim
