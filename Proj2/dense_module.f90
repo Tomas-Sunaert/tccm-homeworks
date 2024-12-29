@@ -76,7 +76,7 @@ Module dense_module
         end do        
     end subroutine mult_dense_naive
 
-    subroutine mult_dense_sim(A, B, C, size, Nmult) ! Use symetries to perform les operations
+    subroutine mult_dense_sim(A, B, C, size, Nmult) ! Use symetries to perform les operations, WRONG
         implicit none
         real(kind=8), intent(in) :: A(:,:), B(:,:)
         real(kind=8), intent(inout) :: C(:,:)
@@ -96,62 +96,6 @@ Module dense_module
             end do
         end do
     end subroutine mult_dense_sim
-
-    subroutine call_mult(method, A, B, C, size, Nmult)
-        implicit none
-        character(len=*), intent(in) :: method
-        real(kind=8), intent(in) :: A(:,:), B(:,:)
-        real(kind=8), intent(out) :: C(:,:)
-        integer, intent(in) :: size
-        integer, intent(out) :: Nmult
-
-        ! Call multiplication method
-        if (method == "naive") then
-            call mult_dense_naive(A, B, C, size, Nmult)
-        elseif (method == "symmetry") then
-            call mult_dense_sim(A, B, C, size, Nmult)
-        elseif (method == "LAPACK") then
-            C = 0.0d0
-            call dgemm('N', 'N', size, size, size, 1.0d0, A, size, B, size, 0.0d0, C, size)
-        else
-            print *, "Error: Invalid method specified: ", method
-            stop
-        end if
-    end subroutine call_mult
-      
-    subroutine measure_mult(method, A, B, C, size, Nmult, totalTime) ! Subroutine to measure matrix multiplication time
-        implicit none
-        character(len=*), intent(in) :: method
-        real(kind=8), intent(in) :: A(:,:), B(:,:)
-        real(kind=8), intent(out) :: C(:,:)
-        integer, intent(in) :: size
-        integer, intent(out) :: Nmult
-        real, intent(out) :: totalTime
-        integer :: beginning, end, rate, t
-
-        print *, "Matrix multiplication using ", method, " method:"
-        Nmult = 0
-        call system_clock(beginning, rate)
-        call call_mult(method, A, B, C, size, Nmult) ! Call multiplication method
-        call system_clock(end)
-        totalTime = real(end - beginning) / real(rate)
-
-        ! In case one matrix multiplication was too slow to be measured
-        if (totalTime == 0) then
-            call system_clock(beginning, rate)
-            Nmult = 0
-            do t = 1, 1000
-                call call_mult(method, A, B, C, size, Nmult)
-            end do
-            call system_clock(end)
-            Nmult = Nmult / 1000
-            totalTime = real(end - beginning) / real(rate) / 1000
-        end if
-
-        print *, "Wall time: ", totalTime, "s"
-        print *, "# Multiplications: ", Nmult
-        print *
-    end subroutine measure_mult
 
 end Module dense_module
 
