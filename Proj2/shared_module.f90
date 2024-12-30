@@ -4,6 +4,20 @@ Module shared_module
     implicit none
     Contains
 
+    subroutine debug_print(C, size, method, debug_flag)
+        logical, intent(in)  :: debug_flag
+        integer, intent(in) :: size
+        character(len=*), intent(in) :: method      
+        real(kind=8), intent(in) :: C(:,:)
+
+        if (debug_flag) then
+            print *, "Matrix C after", method,":"
+            call print_matrix(size, C)
+            print *
+            print *, "#################################"
+        end if
+    end subroutine debug_print
+
     subroutine call_mult(method, A, B, C, size, Nmult, Row1, Row2, Col1, Col2, Val1, Val2, nnz1, nnz2)
         implicit none
         character(len=*), intent(in) :: method
@@ -26,7 +40,7 @@ Module shared_module
         end if
     end subroutine call_mult
       
-    subroutine measure_mult(method, A, B, C, size, Nmult, totalTime, Row1, Row2, Col1, Col2, Val1, Val2, nnz1, nnz2) ! Subroutine to measure matrix multiplication time
+    subroutine measure_mult(method, A, B, C, size, Nmult, totalTime, Row1, Row2, Col1, Col2, Val1, Val2, nnz1, nnz2, debug_flag) ! Subroutine to measure matrix multiplication time
         implicit none
         character(len=*), intent(in) :: method
         real(kind=8), intent(in) :: A(:,:), B(:,:), Val1(:), Val2(:)
@@ -34,6 +48,7 @@ Module shared_module
         integer, intent(in) :: size, Row1(:), Row2(:), Col1(:), Col2(:), nnz1, nnz2
         integer, intent(out) :: Nmult
         real, intent(out) :: totalTime
+        logical, intent(in)  :: debug_flag
 
         integer :: t
         real(kind=8) :: beginning, end
@@ -62,5 +77,6 @@ Module shared_module
         print *, "Wall time: ", totalTime, "s"
         print *, "# Multiplications: ", Nmult
         print *
+        call debug_print(C, size, method, debug_flag)
     end subroutine measure_mult
 end Module shared_module
