@@ -1,16 +1,18 @@
-This file explains what i'm doing
+The file provided cimputes some classical MD simulation given an input coordinate for N atoms. 
+Parameters and potential are optimized for Ar atoms with a shallow LJ potential.
+The initial velocity is set to 0.
 
-I have broken up the problem in many digestable functions.
+In the src folder you'll find all the source codes to check out, as well as the headers for the program, thus breaking up the problem in smaller, more digestable, functions.
 
-Then I'll try to test one by one to see if they behave as expected, putting them in the 'test.c' file and compiling.
+The test run is in the "test" folder, where you'll find a 2 input files to try "inp.txt" and "inp2.txt", as well as some outputs of a previous run. This includes some files of the energies, accelerations, velocities or relative distances, that can be used both for debugging if you want to implement new features or to have a deeper look inside the MD.
 
-Since I'm personally not very familiar with C, I want to see and correct compiling erorrs one by one.
+In the file acceleration.txt you can find in a xyz-like format the mass of each atom followed by the vector components.
 
+In the vel.txt file the velocities are shown for each step (no mass included).
 
+In the r_ij.txt file the relative distances between different atoms is shown for each step.
 
-There are many segments and prototypes, the only one you care about is the "Final.c". All the others are the program that was developing day by day.
-Compile it ad have fun.
-
+In TV_E.txt you'll find 4 columns, the first is the current step, the second is the total kinetic energy, the third is the total potential and the last on is the sum of the previous two. Use this to check the validity of the time step.
 
 
 

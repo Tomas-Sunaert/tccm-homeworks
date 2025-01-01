@@ -35,10 +35,18 @@ int n_step = 1000;
 int M = 10;
 
 
+char file_name[32];
+
+printf("Available .txt files:\n");
+system("ls *.txt");
 
 
+printf("\n");
+printf("Input file name: ");
+scanf("%99s", file_name);
 
-FILE* input_file = fopen("inp.txt", "r"); // assigns the label 'input_file' to the now open file of input
+
+FILE* input_file = fopen(file_name, "r"); // assigns the label 'input_file' to the now open file of input
 FILE* traj = fopen("output.xyz", "w");
 FILE* Energies = fopen("TV_E.txt","w");
 FILE* speed = fopen("vel.txt", "w");
@@ -154,6 +162,7 @@ fprintf(ac,"\n");
 
 for (int i=0; i<N; i++){
 fprintf(traj,"Ar\t");
+fprintf(ac,"%lf\t", mass[i]);
 for (int j=0; j<3; j++){
 fprintf(traj,"%lf\t",P[i][j]);
 fprintf(speed,"%lf\t",vel[i][j]);
@@ -201,7 +210,8 @@ free_2d(next_xlr8tion);
 
 
 
-
+printf("==========================\n");
+printf("Job Done!");
 
 return 0;
 }
