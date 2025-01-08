@@ -7,7 +7,7 @@ integer,  dimension(:), allocatable :: X1_cord, Y1_cord, X_cord_new, Y_cord_new,
 real(kind=8), dimension(:), allocatable :: valxy1, valxy_new,yvec,xvec
 real(kind=8) :: r
 character(256) :: filename1
-filename1 = "MATRIX_125_25p"
+filename1 = "MATRIX_125_2p"
 line_count1 = 0
 resultindex =1
 msize1= 128
