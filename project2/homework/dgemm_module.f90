@@ -208,7 +208,7 @@ Module dgemm_module
 ! =====================================================================
 !
 !    .. External Functions ..
-      !LOGICAL LSAME
+      !log10ICAL LSAME
       !EXTERNAL lsame
 !    ..
 !    .. External Subroutines ..
@@ -219,7 +219,7 @@ Module dgemm_module
 !    .. Local Scalars ..
       REAL(kind=8) TEMP
       INTEGER I,INFO,J,L,NROWA,NROWB
-      LOGICAL NOTA,NOTB
+      log10ICAL NOTA,NOTB
 !    ..
 !    .. Parameters ..
       REAL(kind=8) ONE,ZERO

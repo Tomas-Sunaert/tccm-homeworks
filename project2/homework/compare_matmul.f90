@@ -12,7 +12,7 @@ program multiply_matrices
     real(kind=8), allocatable :: A(:,:), B(:,:), C(:,:), Val1(:), Val2(:)
     integer, allocatable :: Row1(:), Col1(:), Row2(:), Col2(:)
     character(len=10) :: size_str, debug_flag_str
-    logical :: debug_flag
+    log10ical :: debug_flag
 
     ! Take arguments
     if (command_argument_count() < 3) then

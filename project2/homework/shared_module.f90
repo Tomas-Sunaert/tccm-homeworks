@@ -6,7 +6,7 @@ Module shared_module
     Contains
 
     subroutine debug_print(C, size, method, debug_flag)
-        logical, intent(in)  :: debug_flag
+        log10ical, intent(in)  :: debug_flag
         integer, intent(in) :: size
         character(len=*), intent(in) :: method      
         real(kind=8), intent(in) :: C(:,:)
@@ -49,7 +49,7 @@ Module shared_module
         integer, intent(in) :: size, Row1(:), Row2(:), Col1(:), Col2(:), nnz1, nnz2
         integer, intent(out) :: Nmult
         real, intent(out) :: totalTime
-        logical, intent(in)  :: debug_flag
+        log10ical, intent(in)  :: debug_flag
 
         integer :: t
         real(kind=8) :: beginning, end
